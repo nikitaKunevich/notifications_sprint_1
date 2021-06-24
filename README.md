@@ -1,43 +1,58 @@
-##Структура сообщений
-###Массовая рассылка  
-**Отправитель**: ugc  
-**Тип сообщения**: email  
-**Тип события**: новые фильмы на платформе
-
-```json
+##API  
+**Отправитель**: auth  
+**Тип источника сообщения**: email  
+**Тип события**: приветственное письмо  
+```json5
 {
-  "event_id": "a53b6c5f-4ec8-450a-a16d-4c53a6bd2892",
   "service": "ugc",
-  "source_type": "email",
-  "event_type": "new_movies",
+  "source": "email",
+  "event_type": "welcome_letter",
+  "scheduled_datetime": "2021-06-24T09:32:20.990847",
+  "payload": {
+    "user_id": "ad0ec496-8c65-42c5-8fa7-3cf17bdaca7f"
+  }
+}
+```
+
+**Отправитель**: ugc  
+**Тип источника сообщения**: email  
+**Тип события**: подборка фильмов
+```json5
+{
+  "service": "ugc",
+  "source": "email",
+  "event_type": "selection_movies",
+  "scheduled_datetime": "2021-06-24T09:32:20.990847",
   "payload": {
     "user_ids": [
-      "1ec4cd73-2fd5-4f25-af68-b6595d279af2",
-      "ad0ec496-8c65-42c5-8fa7-3cf17bdaca7f"
+      "ad0ec496-8c65-42c5-8fa7-3cf17bdaca7f",
+      "39f042c2-dfb0-47e2-916b-5c0e0c493ded",
+      "4109d174-eeec-4df3-8e4a-53fd59e251cd"
+    ],
+    "movie_ids": [
+        "9dac72a5-f52e-4b0d-9ce9-e03b4ba0dfc4",
+        "0425d9b1-9b02-4fbe-ba52-36e2d59a3a0e",
+        "aca7e4c5-c3c8-456f-b162-a3cb02ff9000"
     ]
   }
 }
 ```
-###Персонализированная рассылка
+
 **Отправитель**: ugc  
-**Тип сообщения**: email  
-**Тип события**: статистика просмотренных фильмов
-```json
+**Тип источника сообщения**: email  
+**Тип события**: Персональная рассылка фильмов
+```json5
 {
-  "event_id": "a53b6c5f-4ec8-450a-a16d-4c53a6bd2893",
   "service": "ugc",
-  "source_type": "email",
-  "event_type": "view_statistics",
+  "source": "email",
+  "event_type": "personal_newsletter",
+  "scheduled_datetime": "2021-06-24T09:32:20.990847",
   "payload": {
     "user_id": "ad0ec496-8c65-42c5-8fa7-3cf17bdaca7f",
     "movie_ids": [
-      "25d7e6ab-f18a-4245-a8e1-76531c0fc98d",
-      "b47bcfc0-9c74-4585-a866-4d4d4308902c",
-      "484ea0d9-ff56-4ccc-b638-e09a9f3eaf00",
-      "9277df37-3c6a-4b6f-a462-ac1f4cbf2917"
-    ],
-    "favourite_movie_ids": [
-      "9277df37-3c6a-4b6f-a462-ac1f4cbf2917"
+        "9dac72a5-f52e-4b0d-9ce9-e03b4ba0dfc4",
+        "0425d9b1-9b02-4fbe-ba52-36e2d59a3a0e",
+        "aca7e4c5-c3c8-456f-b162-a3cb02ff9000"
     ]
   }
 }

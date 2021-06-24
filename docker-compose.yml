@@ -1,11 +1,49 @@
 version: "3.5"
 services:
+  nginx:
+    container_name: cinema_notification_nginx
+    image: nginx:latest
+    ports:
+      - 8000:80
+    networks:
+      - cinema_network
+    volumes:
+      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d
+      - cinema_nginx_notification_static:/usr/share/nginx/www/static
+      - cinema_nginx_notification_media:/usr/share/nginx/www/media
+
+  admin:
+    container_name: cinema_notification_admin
+    build:
+      context: .
+      dockerfile: docker/admin/Dockerfile
+    env_file:
+      - docker/admin/list.env
+    networks:
+      - cinema_network
+    volumes:
+      - cinema_nginx_notification_static:/app/static
+      - cinema_nginx_notification_media:/app/media
+
+  workers:
+    container_name: cinema_notification_workers
+    build:
+      context: .
+      dockerfile: docker/workers/Dockerfile
+    env_file:
+      - docker/workers/list.env
+    networks:
+      - cinema_network
+
   rabbitmq:
     image: rabbitmq:3-management-alpine
     container_name: cinema_notification_rabbitmq
     environment:
       RABBITMQ_DEFAULT_USER: rabbit
       RABBITMQ_DEFAULT_PASS: rabbit
+    networks:
+      - cinema_network
     ports:
       - 5672:5672
       - 15672:15672
@@ -14,6 +52,8 @@ services:
     container_name: cinema_notification_postgres
     env_file:
       - docker/postgresql/list.env
+    networks:
+      - cinema_network
     image: postgres:latest
     volumes:
       - postgres_notification_data:/var/lib/postgresql/data
@@ -22,3 +62,9 @@ services:
 
 volumes:
   postgres_notification_data:
+  cinema_nginx_notification_static:
+  cinema_nginx_notification_media:
+
+networks:
+  cinema_network:
+    external: true

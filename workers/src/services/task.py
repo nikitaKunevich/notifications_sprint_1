@@ -1,12 +1,15 @@
+import logging
 from contextlib import contextmanager
 from typing import Optional
 
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from db import SessionLocal
 from services.abstract import AbstractService
 from workers.email.models import Template, Task
 
+logger = logging.getLogger(__name__)
 
 @contextmanager
 def service_with_session(session: Session):
@@ -18,9 +21,12 @@ def service_with_session(session: Session):
 
 class TaskService(AbstractService):
     def create_task(self, **kwargs):
-        task = Task(**kwargs)
-        self._session.add(task)
-        self._session.commit()
+        try:
+            task = Task(**kwargs)
+            self._session.add(task)
+            self._session.commit()
+        except IntegrityError as exc:
+            logger.exception(exc)
 
 
 def get_task_service() -> TaskService:

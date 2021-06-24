@@ -1,3 +1,4 @@
+import hashlib
 import json
 import logging
 from datetime import datetime
@@ -42,6 +43,9 @@ class EmailConsumer(ReconnectingConsumer):
             self._consumer.acknowledge_message(delivery_tag)
             return
 
+    def _get_hash_sum(self, data: dict) -> str:
+        return hashlib.sha256(json.dumps(data, sort_keys=True).encode('utf-8')).hexdigest()
+
     def on_message(
         self,
         _unused_channel: pika_channel.Channel,
@@ -53,9 +57,6 @@ class EmailConsumer(ReconnectingConsumer):
 
         if event_data is None:
             return
-
-        # {"service": "ugc", "event_id": "ad0ec496-8c65-42c5-8fa7-3cf17bdaca7f", "event_type": "welcome_letter",
-        #  "payload": {"user_id": "ad0ec496-8c65-42c5-8fa7-3cf17bdaca7f"}}
 
         adapter = EmailEventAdapter(
             logger, event_data
@@ -70,20 +71,19 @@ class EmailConsumer(ReconnectingConsumer):
                 adapter.info("Email handler found")
                 adapter.debug(f"Email handler called with {event_data}")
 
-                template_data = handler(event_data)
-
-                scheduled_datetime = datetime.fromisoformat(event_data['scheduled_datetime'])
+                result = handler(event_data)
 
                 task_service = get_task_service()
 
-                task_service.create_task(
-                    event_id=event_data["event_id"],
-                    email=template_data['context']["email"],
-                    scheduled_datetime=scheduled_datetime,
-                    template_id=template_data['template_id'],
-                    status=TaskStatuses.in_process.value,
-                    template_data=template_data['context']
-                )
+                for template_data in result['context']:
+                    task_service.create_task(
+                        email=template_data["email"],
+                        scheduled_datetime=datetime.fromisoformat(result["scheduled_datetime"]),
+                        template_id=result['template_id'],
+                        status=TaskStatuses.in_process.value,
+                        template_data=template_data,
+                        hash_sum=self._get_hash_sum(result)
+                    )
 
                 adapter.info("Task successfully created")
 

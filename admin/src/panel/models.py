@@ -7,6 +7,8 @@ from django.utils import timezone
 
 class TemplateCodes(models.TextChoices):
     welcome_letter = "welcome_letter", "Приветственное письмо"
+    selection_movies = "selection_movies", "Подборка фильмов"
+    personal_newsletter = "personal_newsletter", "Персональная рассылка фильмов"
 
 
 class Template(models.Model):
@@ -41,7 +43,6 @@ class Task(models.Model):
         (DONE, "Выполнена"),
         (CANCELLED, "Отмененен"),
     )
-    event_id = models.CharField(max_length=50, unique=True)
     status = models.PositiveSmallIntegerField(choices=STATUSES, default=IN_PROCESS)
     email = models.CharField(max_length=250)
     template = models.ForeignKey(Template, on_delete=models.SET_NULL, null=True)
@@ -49,6 +50,8 @@ class Task(models.Model):
     scheduled_datetime = models.DateTimeField(blank=True, null=True)
     execution_datetime = models.DateTimeField(blank=True, null=True)
     error = models.TextField(blank=True, null=True)
+
+    hash_sum = models.CharField(max_length=100, unique=True)
 
     created_at = models.DateTimeField(editable=False)
     updated_at = models.DateTimeField(editable=False)
@@ -58,9 +61,6 @@ class Task(models.Model):
             self.created_at = timezone.now()
         self.updated_at = timezone.now()
         return super().save(*args, **kwargs)
-
-    def __str__(self):
-        return str(self.event_id)
 
     class Meta:
         db_table = 'email_tasks'

@@ -14,6 +14,8 @@ class DateMixin:
 
 class TemplateCodes(Enum):
     welcome_letter = "welcome_letter"
+    selection_movies = "selection_movies"
+    personal_newsletter = "personal_newsletter"
 
 
 class Template(DateMixin, Base):
@@ -36,7 +38,6 @@ class Task(DateMixin, Base):
     __tablename__ = "email_tasks"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    event_id = Column(String, nullable=False)
     status = Column(Integer)
     email = Column(String, nullable=False)
 
@@ -47,3 +48,5 @@ class Task(DateMixin, Base):
     execution_datetime = Column(DateTime)
 
     error = Column(Text, nullable=True)
+
+    hash_sum = Column(String)

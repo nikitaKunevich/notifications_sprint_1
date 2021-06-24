@@ -1,6 +1,9 @@
 from typing import Optional
+import logging
 
 from consumers.email import EmailConsumer
+
+logger = logging.getLogger(__name__)
 
 
 class Handler:
@@ -11,6 +14,7 @@ class Handler:
         self._email_consumer = EmailConsumer()
 
     def start(self):
+        logger.info("Запуск email потребителя")
         self._email_consumer.consume()
 
 

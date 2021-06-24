@@ -14,13 +14,14 @@ class Settings(BaseSettings):
     rabbit_password: str
     rabbit_host: str
 
-    postgres_db: str = "postgres"
-    postgres_host: str = "localhost"
-    postgres_port: int = 5432
-    postgres_user: str = "postgres"
-    postgres_password: str = "postgres"
+    postgres_db: str
+    postgres_host: str
+    postgres_port: int
+    postgres_user: str
+    postgres_password: str
 
     url_auth_service: str
+    url_movie_service: str
 
     @property
     def database_settings(self) -> dict:
