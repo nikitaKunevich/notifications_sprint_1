@@ -36,6 +36,16 @@ services:
     networks:
       - cinema_network
 
+  api:
+    container_name: cinema_notification_api
+    build:
+      context: .
+      dockerfile: docker/api/Dockerfile
+    env_file:
+      - docker/api/list.env
+    networks:
+      - cinema_network
+
   rabbitmq:
     image: rabbitmq:3-management-alpine
     container_name: cinema_notification_rabbitmq
