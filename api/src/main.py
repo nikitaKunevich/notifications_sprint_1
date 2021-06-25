@@ -37,7 +37,7 @@ def shutdown_event():
     connection.close()
 
 
-@app.post("v1/events", status_code=201)
+@app.post("v1/event", status_code=201)
 def put_event_to_queue(event: Event):
 
     try:
