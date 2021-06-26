@@ -10,6 +10,9 @@ django-admin-json-editor = "*"
 gunicorn = "*"
 
 [dev-packages]
+black = "==21.6b0"
+wemake-python-styleguide = "*"
+isort = "*"
 
 [requires]
 python_version = "3.9"

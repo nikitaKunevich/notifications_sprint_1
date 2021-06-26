@@ -1,7 +1,6 @@
 from logging.config import fileConfig
 
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
+from sqlalchemy import engine_from_config, pool
 
 from alembic import context
 
@@ -9,6 +8,7 @@ from alembic import context
 # access to the values within the .ini file in use.
 from config import settings
 from workers.email import models
+
 # from db import Base
 
 config = context.config
@@ -31,7 +31,9 @@ target_metadata = models.Base.metadata
 section = config.config_ini_section
 config.set_section_option(section, "POSTGRES_USER", settings.postgres_user)
 config.set_section_option(
-    section, "POSTGRES_PASSWORD", settings.postgres_password,
+    section,
+    "POSTGRES_PASSWORD",
+    settings.postgres_password,
 )
 config.set_section_option(section, "POSTGRES_HOST", settings.postgres_host)
 config.set_section_option(section, "POSTGRES_DB", settings.postgres_db)
@@ -76,9 +78,7 @@ def run_migrations_online():
     )
 
     with connectable.connect() as connection:
-        context.configure(
-            connection=connection, target_metadata=target_metadata
-        )
+        context.configure(connection=connection, target_metadata=target_metadata)
 
         with context.begin_transaction():
             context.run_migrations()

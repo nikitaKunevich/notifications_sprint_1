@@ -2,6 +2,8 @@ from pydantic import BaseSettings
 
 
 class Settings(BaseSettings):
+    """Основные настройки приложения."""
+
     sleep_time: int = 10
     log_level: str = "INFO"
     default_timeout_for_requests: int = 2
@@ -24,18 +26,9 @@ class Settings(BaseSettings):
     url_movie_service: str
 
     @property
-    def database_settings(self) -> dict:
-        return {
-            "dbname": self.postgres_db,
-            "user": self.postgres_user,
-            "password": self.postgres_password,
-            "host": self.postgres_host,
-            "port": self.postgres_port,
-        }
-
-    @property
     def database_uri(self):
-        return f"postgresql://{self.postgres_user}:{self.postgres_password}@{self.postgres_host}:{self.postgres_port}/{self.postgres_db}"
+        """Возвращает URI базы данных."""
+        return f"postgresql://{self.postgres_user}:{self.postgres_password}@{self.postgres_host}:{self.postgres_port}/{self.postgres_db}"  # noqa: WPS322, E501
 
 
 settings = Settings()

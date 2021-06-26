@@ -1,24 +1,31 @@
 from datetime import datetime
 from enum import Enum
 
-from sqlalchemy import Column, String, Text, DateTime, ARRAY, JSON, Boolean, Integer, ForeignKey, Enum as saEnum
-from sqlalchemy.orm import relationship
+from sqlalchemy import JSON, Column, DateTime
+from sqlalchemy import Enum as saEnum
+from sqlalchemy import ForeignKey, Integer, String, Text
 
 from db import Base
 
 
 class DateMixin:
+    """Вспомогательный миксин дат."""
+
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
 
 class TemplateCodes(Enum):
+    """Коды шаблонов."""
+
     welcome_letter = "welcome_letter"
     selection_movies = "selection_movies"
     personal_newsletter = "personal_newsletter"
 
 
 class Template(DateMixin, Base):
+    """Модель шаблонов."""
+
     __tablename__ = "email_templates"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -28,12 +35,9 @@ class Template(DateMixin, Base):
     subject = Column(Text, nullable=False)
 
 
-class TaskStatuses(Enum):
-    in_process = 1
-    done = 2
-    cancelled = 3
+class NotificationStatuses(str, Enum):  # noqa: WPS600
+    """Статусы уведомлений."""
 
-class NotificationStatuses(str, Enum):
     to_send = "to_send"
     in_process = "in_process"
     done = "done"
@@ -41,29 +45,15 @@ class NotificationStatuses(str, Enum):
     failed = "failed"
 
 
-class Task(DateMixin, Base):
-    __tablename__ = "email_tasks"
+class Channels(str, Enum):  # noqa: WPS600
+    """Канал передачи данных."""
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    status = Column(saEnum(NotificationStatuses))
-    email = Column(String, nullable=False)
-
-    template_id = Column(Integer, ForeignKey('email_templates.id'))
-    template_data = Column(JSON)
-
-    scheduled_datetime = Column(DateTime)
-    execution_datetime = Column(DateTime)
-
-    error = Column(Text, nullable=True)
-
-    hash_sum = Column(String)
-
-
-
-class Channels(str, Enum):
     email = "email"
 
+
 class Notification(DateMixin, Base):
+    """Уведомление пользователя."""
+
     __tablename__ = "notifications"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -72,7 +62,7 @@ class Notification(DateMixin, Base):
     channel = Column(saEnum(Channels))
     receiver_address = Column(String)
 
-    template_id = Column(Integer, ForeignKey('email_templates.id'))
+    template_id = Column(Integer, ForeignKey("email_templates.id"))
     template_data = Column(JSON)
 
     scheduled_datetime = Column(DateTime)

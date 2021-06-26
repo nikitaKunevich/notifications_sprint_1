@@ -17,12 +17,11 @@ def service_with_session(session: Session):
 
 
 class TemplateService(AbstractService):
+    """Сервис по работе с моделью Template."""
+
     def get_template_by_event_type(self, event_type: str) -> Optional[Template]:
-        return (
-            self._session.query(Template)
-                .filter_by(code=event_type)
-                .one_or_none()
-        )
+        """Получает Template экземпляр по типу события."""
+        return self._session.query(Template).filter_by(code=event_type).one_or_none()
 
 
 def get_template_service() -> TemplateService:

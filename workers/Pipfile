@@ -12,6 +12,9 @@ psycopg2-binary = "*"
 httpx = "*"
 
 [dev-packages]
+black = "==21.6b0"
+wemake-python-styleguide = "*"
+isort = "*"
 
 [requires]
 python_version = "3.9"

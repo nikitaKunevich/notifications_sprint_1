@@ -1,5 +1,7 @@
 from django.apps import AppConfig
 
 
-class FilmWorksConfig(AppConfig):
+class PanelConfig(AppConfig):
+    """Конфиг приложения panel."""
+
     name = "panel"

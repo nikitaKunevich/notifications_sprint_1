@@ -1,17 +1,20 @@
-from datetime import datetime
-from urllib.parse import urljoin
-
+"""Модуль содержит основные обработчики для основных событий."""
 import httpx
+
 from config import settings
 from services.template import get_template_service
 
 
-def welcome_letter(event_data: dict) -> dict:
-    payload = event_data['payload']
-    user_id: str = payload['user_id']
-    event_type: str = event_data['event_type']
+def welcome_letter(event_data: dict) -> dict:  # noqa: WPS210
+    """Обработчик для события 'Приветственное письмо'."""
+    payload = event_data["payload"]
+    user_id: str = payload["user_id"]
+    event_type: str = event_data["event_type"]
 
-    response = httpx.post(f"{settings.url_auth_service}/auth/user_ids_bulk/", json=[user_id])
+    response = httpx.post(
+        f"{settings.url_auth_service}/auth/user_ids_bulk/",
+        json=[user_id],
+    )
     json_data = response.json()[0]
 
     # Template
@@ -26,11 +29,9 @@ def welcome_letter(event_data: dict) -> dict:
                 "email": json_data["email"],
             },
         ],
-        "scheduled_datetime": event_data['scheduled_datetime'],
-        "template_id": template.id
+        "scheduled_datetime": event_data["scheduled_datetime"],
+        "template_id": template.id,
     }
 
 
-handlers = {
-    "welcome_letter": welcome_letter
-}
+handlers = {"welcome_letter": welcome_letter}
