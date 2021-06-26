@@ -4,10 +4,10 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-fastapi = "*"
-pika = "*"
-uvicorn = "*"
-pipfile = "*"
+pydantic = "*"
+sqlalchemy = "*"
+psycopg2-binary = "*"
+jinja2 = "*"
 backoff = "*"
 
 [dev-packages]

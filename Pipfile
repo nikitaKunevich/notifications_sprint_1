@@ -4,11 +4,8 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-fastapi = "*"
+sqlalchemy = "*"
 pika = "*"
-uvicorn = "*"
-pipfile = "*"
-backoff = "*"
 
 [dev-packages]
 

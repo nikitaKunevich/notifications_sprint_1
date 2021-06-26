@@ -33,12 +33,19 @@ class TaskStatuses(Enum):
     done = 2
     cancelled = 3
 
+class NotificationStatuses(str, Enum):
+    to_send = "to_send"
+    in_process = "in_process"
+    done = "done"
+    cancelled = "cancelled"
+    failed = "failed"
+
 
 class Task(DateMixin, Base):
     __tablename__ = "email_tasks"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    status = Column(Integer)
+    status = Column(saEnum(NotificationStatuses))
     email = Column(String, nullable=False)
 
     template_id = Column(Integer, ForeignKey('email_templates.id'))
@@ -50,3 +57,27 @@ class Task(DateMixin, Base):
     error = Column(Text, nullable=True)
 
     hash_sum = Column(String)
+
+
+
+class Channels(str, Enum):
+    email = "email"
+
+class Notification(DateMixin, Base):
+    __tablename__ = "notifications"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    status = Column(saEnum(NotificationStatuses))
+
+    channel = Column(saEnum(Channels))
+    receiver_address = Column(String)
+
+    template_id = Column(Integer, ForeignKey('email_templates.id'))
+    template_data = Column(JSON)
+
+    scheduled_datetime = Column(DateTime)
+    execution_datetime = Column(DateTime)
+    retry_count = Column(Integer, default=0)
+
+    error_message = Column(Text, nullable=True)
+    hash_sum = Column(String, unique=True)
