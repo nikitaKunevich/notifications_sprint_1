@@ -13,7 +13,7 @@ from services.task import get_task_service
 from workers.email import models
 from workers.email.handlers import handlers
 from workers.email.logger import EmailEventAdapter
-from workers.email.models import TaskStatuses
+from workers.email.models import TaskStatuses, NotificationStatuses
 
 logger = logging.getLogger(__name__)
 
@@ -80,7 +80,7 @@ class EmailConsumer(ReconnectingConsumer):
                         email=template_data["email"],
                         scheduled_datetime=datetime.fromisoformat(result["scheduled_datetime"]),
                         template_id=result['template_id'],
-                        status=TaskStatuses.in_process.value,
+                        status=NotificationStatuses.to_send.value,
                         template_data=template_data,
                         hash_sum=self._get_hash_sum(result)
                     )

@@ -45,6 +45,17 @@ services:
       - docker/api/list.env
     networks:
       - cinema_network
+    ports:
+      - 8001:8000
+
+  scheduler:
+    build:
+      context: .
+      dockerfile: docker/scheduler/Dockerfile
+    env_file:
+      - docker/scheduler/list.env
+    networks:
+      - cinema_network
 
   rabbitmq:
     image: rabbitmq:3-management-alpine
@@ -77,4 +88,3 @@ volumes:
 
 networks:
   cinema_network:
-    external: true

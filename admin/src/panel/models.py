@@ -34,16 +34,31 @@ class Template(models.Model):
 
 
 class Task(models.Model):
-    IN_PROCESS = 1
-    DONE = 2
-    CANCELLED = 3
+    class NotificationStatuses(str, Enum):
+        to_send = "to_send"
+        in_process = "in_process"
+        done = "done"
+        cancelled = "cancelled"
+        failed = "failed"
 
-    STATUSES = (
-        (IN_PROCESS, "В процессе исполнения"),
-        (DONE, "Выполнена"),
-        (CANCELLED, "Отмененен"),
+    NOTIFICATION_STATUSES = (
+        (NotificationStatuses.to_send, "to_send"),
+        (NotificationStatuses.in_process, "in_process"),
+        (NotificationStatuses.done, "done"),
+        (NotificationStatuses.cancelled, "cancelled"),
+        (NotificationStatuses.failed, "failed")
     )
-    status = models.PositiveSmallIntegerField(choices=STATUSES, default=IN_PROCESS)
+
+    # IN_PROCESS = 1
+    # DONE = 2
+    # CANCELLED = 3
+    #
+    # STATUSES = (
+    #     (IN_PROCESS, "В процессе исполнения"),
+    #     (DONE, "Выполнена"),
+    #     (CANCELLED, "Отмененен"),
+    # )
+    status = models.CharField(max_length=250, choices=NOTIFICATION_STATUSES, default=NotificationStatuses.to_send)
     email = models.CharField(max_length=250)
     template = models.ForeignKey(Template, on_delete=models.SET_NULL, null=True)
     template_data = JSONField(default={})

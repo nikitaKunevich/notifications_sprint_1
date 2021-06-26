@@ -2,7 +2,9 @@ import logging
 import sys
 
 import pika
+import pika.exceptions
 from fastapi import FastAPI, HTTPException
+import backoff
 
 from event_model import Event
 from config import settings
@@ -24,9 +26,14 @@ def init_queue():
     parameters = pika.ConnectionParameters(
         settings.rabbit_host, credentials=credentials
     )
-    connection = pika.BlockingConnection(parameters)
+
+    @backoff.on_exception(backoff.expo, pika.exceptions.AMQPConnectionError)
+    def _connect():
+        return pika.BlockingConnection(parameters)
+
+    connection = _connect()
     channel = connection.channel()
-    channel.queue_declare(queue=settings.rabbit_events_queue_name)
+    # channel.queue_declare(queue=settings.rabbit_events_queue_name, durable=True)
 
     logger.info("Connected to queue.")
 
@@ -37,11 +44,10 @@ def shutdown_event():
     connection.close()
 
 
-@app.post("v1/event", status_code=201)
+@app.post("/api/v1/event", status_code=201)
 def put_event_to_queue(event: Event):
-
     try:
-        channel.basic_publish(exchange='',
+        channel.basic_publish(exchange=settings.rabbit_events_exchange_name,
                               routing_key=settings.rabbit_events_queue_name,
                               body=event.json())
     except Exception as e:
