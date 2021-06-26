@@ -1,12 +1,12 @@
 import logging
 
+import backoff
 import pika
 import pika.exceptions
 from fastapi import FastAPI, HTTPException
-import backoff
 
-from event_model import Event
 from config import settings
+from event_model import Event
 
 app = FastAPI()
 
@@ -38,7 +38,10 @@ def init_queue():
         exchange_type=settings.rabbit_exchange_type,
         durable=True
     )
-    channel.queue_declare(queue=settings.rabbit_events_queue_name, durable=True)
+    channel.queue_declare(
+        queue=settings.rabbit_events_queue_name,
+        durable=True
+    )
 
     logger.info("Connected to queue.")
 
@@ -57,6 +60,9 @@ def put_event_to_queue(event: Event):
                               body=event.json())
     except Exception as e:
         logger.error("ERROR - queue publishing error: " + str(e))
-        raise HTTPException(500, detail="500: Internal server error. Please try later.")
+        raise HTTPException(
+            500,
+            detail="500: Internal server error. Please try later."
+        )
 
     return {"201": "Created"}
