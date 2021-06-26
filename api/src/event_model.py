@@ -18,8 +18,8 @@ class Source(str, Enum):
 
 class EventType(str, Enum):
     welcome_letter = "welcome_letter"
-    movie_recommendation = "movie_recommendation"
-    personal_movie_recommendation = "personal_movie_recommendation"
+    selection_movies = "selection_movies"
+    personal_newsletter = "personal_newsletter"
 
 
 class Event(BaseModel):
