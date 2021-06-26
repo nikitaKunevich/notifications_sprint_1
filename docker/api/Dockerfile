@@ -26,4 +26,4 @@ COPY api/src $ROOT_APP
 RUN chown -R $USER:$GROUP $ROOT_APP
 USER $USER
 
-ENTRYPOINT ["uvicorn", "main:app", "--port", "8000"]
+ENTRYPOINT ["uvicorn", "main:app", "--port", "8000", "--host", "0.0.0.0"]

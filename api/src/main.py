@@ -1,5 +1,4 @@
 import logging
-import sys
 
 import pika
 from fastapi import FastAPI, HTTPException
@@ -26,7 +25,13 @@ def init_queue():
     )
     connection = pika.BlockingConnection(parameters)
     channel = connection.channel()
-    channel.queue_declare(queue=settings.rabbit_events_queue_name)
+
+    channel.exchange_declare(
+        exchange=settings.rabbit_exchange,
+        exchange_type=settings.rabbit_exchange_type,
+        durable=True
+    )
+    channel.queue_declare(queue=settings.rabbit_events_queue_name, durable=True)
 
     logger.info("Connected to queue.")
 
@@ -37,11 +42,11 @@ def shutdown_event():
     connection.close()
 
 
-@app.post("v1/event", status_code=201)
+@app.post("/api/v1/event", status_code=201)
 def put_event_to_queue(event: Event):
 
     try:
-        channel.basic_publish(exchange='',
+        channel.basic_publish(exchange=settings.rabbit_exchange,
                               routing_key=settings.rabbit_events_queue_name,
                               body=event.json())
     except Exception as e:

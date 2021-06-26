@@ -8,6 +8,8 @@ class Settings(BaseSettings):
     rabbit_username: str
     rabbit_password: str
     rabbit_host: str
+    rabbit_exchange: str
+    rabbit_exchange_type: str
 
 
 settings = Settings()
