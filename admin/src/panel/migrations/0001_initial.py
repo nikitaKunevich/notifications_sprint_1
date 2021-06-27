@@ -11,23 +11,43 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Template',
+            name="Template",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=250, verbose_name='Наименование')),
-                ('code', models.CharField(choices=[('welcome_letter', 'Приветственное письмо'), ('selection_movies', 'Подборка фильмов'), ('personal_newsletter', 'Персональная рассылка фильмов')], max_length=50)),
-                ('html', models.TextField()),
-                ('subject', models.TextField(blank=True, null=True)),
-                ('created_at', models.DateTimeField(editable=False)),
-                ('updated_at', models.DateTimeField(editable=False)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "title",
+                    models.CharField(max_length=250, verbose_name="Наименование"),
+                ),
+                (
+                    "code",
+                    models.CharField(
+                        choices=[
+                            ("welcome_letter", "Приветственное письмо"),
+                            ("selection_movies", "Подборка фильмов"),
+                            ("personal_newsletter", "Персональная рассылка фильмов"),
+                        ],
+                        max_length=50,
+                    ),
+                ),
+                ("html", models.TextField()),
+                ("subject", models.TextField(blank=True, null=True)),
+                ("created_at", models.DateTimeField(editable=False)),
+                ("updated_at", models.DateTimeField(editable=False)),
             ],
             options={
-                'db_table': 'email_templates',
+                "db_table": "email_templates",
             },
         ),
         migrations.CreateModel(

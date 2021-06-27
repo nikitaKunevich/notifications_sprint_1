@@ -84,7 +84,6 @@ class EmailConsumer(ReconnectingConsumer):
             task_service = get_task_service()
 
             for template_data in result["context"]:
-                print(template_data)
                 task_service.create_task(
                     email=template_data["email"],
                     scheduled_datetime=datetime.fromisoformat(
