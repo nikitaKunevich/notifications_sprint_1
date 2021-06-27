@@ -51,18 +51,16 @@ class Channels(str, Enum):  # noqa: WPS600
     email = "email"
 
 
-class Notification(DateMixin, Base):
+class Task(DateMixin, Base):
     """Уведомление пользователя."""
 
-    __tablename__ = "notifications"
+    __tablename__ = "email_tasks"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     status = Column(saEnum(NotificationStatuses))
+    email = Column(String, nullable=False)
 
-    channel = Column(saEnum(Channels))
-    receiver_address = Column(String)
-
-    template_id = Column(Integer, ForeignKey("email_templates.id"))
+    template_id = Column(Integer, ForeignKey('email_templates.id'))
     template_data = Column(JSON)
 
     scheduled_datetime = Column(DateTime)

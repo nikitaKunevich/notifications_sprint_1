@@ -55,7 +55,7 @@ class Channels(str, Enum):
     email = "email"
 
 
-class Notifications(models.Model):
+class Task(models.Model):
     """Модель задач."""
 
     NOTIFICATION_STATUSES = (
@@ -65,25 +65,16 @@ class Notifications(models.Model):
         (NotificationStatuses.cancelled, "cancelled"),
         (NotificationStatuses.failed, "failed"),
     )
-    CHANNELS = (
-        (Channels.email, "email"),
-    )
     status = models.CharField(
         max_length=250,
         choices=NOTIFICATION_STATUSES,
         default=NotificationStatuses.to_send,
     )
-    channel = models.CharField(
-        max_length=250,
-        choices=CHANNELS,
-        default=Channels.email,
-    )
-    receiver_address = models.CharField(max_length=250)
+    email = models.CharField(max_length=250)
     template = models.ForeignKey(Template, on_delete=models.SET_NULL, null=True)
     template_data = JSONField(default={})
     scheduled_datetime = models.DateTimeField(blank=True, null=True)
     execution_datetime = models.DateTimeField(blank=True, null=True)
-    error = models.TextField(blank=True, null=True)
 
     retry_count = models.PositiveIntegerField(default=0)
 
@@ -92,7 +83,7 @@ class Notifications(models.Model):
     created_at = models.DateTimeField(editable=False)
     updated_at = models.DateTimeField(editable=False)
 
-    error_message = models.TextField(null=True)
+    error_message = models.TextField(null=True, blank=True)
 
     def save(self, *args, **kwargs):
         """Сохраннение экземпляра."""
@@ -102,4 +93,4 @@ class Notifications(models.Model):
         return super().save(*args, **kwargs)
 
     class Meta:
-        db_table = "notifications"
+        db_table = "email_tasks"

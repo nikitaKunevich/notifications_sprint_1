@@ -11,8 +11,8 @@ class TemplatesAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(models.Notifications)
-class NotificationsAdmin(admin.ModelAdmin):
+@admin.register(models.Task)
+class TasksAdmin(admin.ModelAdmin):
     """Интерфейс администратора для модели Task."""
 
     pass

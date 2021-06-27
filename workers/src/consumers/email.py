@@ -9,10 +9,10 @@ from pika import channel as pika_channel  # noqa: F401
 
 from config import settings
 from consumers.base import ReconnectingConsumer
-from services.notification import get_notification_service
+from services.task import get_task_service
 from workers.email.handlers import handlers
 from workers.email.logger import EmailEventAdapter
-from workers.email.models import Channels, NotificationStatuses
+from workers.email.models import NotificationStatuses
 
 logger = logging.getLogger(__name__)
 
@@ -81,11 +81,12 @@ class EmailConsumer(ReconnectingConsumer):
                 self._consumer.acknowledge_message(basic_deliver.delivery_tag)
                 return None
 
-            notification_service = get_notification_service()
+            task_service = get_task_service()
 
             for template_data in result["context"]:
-                notification_service.create_notification(
-                    receiver_address=template_data["email"],
+                print(template_data)
+                task_service.create_task(
+                    email=template_data["email"],
                     scheduled_datetime=datetime.fromisoformat(
                         result["scheduled_datetime"],
                     ),
@@ -93,7 +94,6 @@ class EmailConsumer(ReconnectingConsumer):
                     status=NotificationStatuses.to_send.value,
                     template_data=template_data,
                     hash_sum=self._get_hash_sum(result),
-                    channel=Channels.email,
                 )
 
             adapter.info("Notification successfully created")

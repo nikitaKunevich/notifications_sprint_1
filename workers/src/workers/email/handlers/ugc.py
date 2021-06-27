@@ -18,7 +18,7 @@ def selection_movies(event_data: dict) -> dict:
     )
     person_json_data = response.json()
 
-    response = httpx.post(f"{settings.url_auth_service}/movies/", json=[movie_ids])
+    response = httpx.post(f"{settings.url_movie_service}/movies/", json=[movie_ids])
     movies_json_data = response.json()
 
     movie_info = [movie["title"] for movie in movies_json_data]

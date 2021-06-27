@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 
 from db import SessionLocal
 from services.abstract import AbstractService
-from workers.email.models import Notification
+from workers.email.models import Task
 
 logger = logging.getLogger(__name__)
 
@@ -14,25 +14,25 @@ logger = logging.getLogger(__name__)
 @contextmanager
 def service_with_session(session: Session):
     """Возвращает подготовленный сервис."""
-    service = NotificationService(session)
+    service = TaskService(session)
     yield service
     service.close()
 
 
-class NotificationService(AbstractService):
-    """Сервис по работе с моделью notification."""
+class TaskService(AbstractService):
+    """Сервис по работе с моделью Task."""
 
-    def create_notification(self, **kwargs) -> None:
-        """Создает экземпляр notification."""
-        notification = Notification(**kwargs)
-        self._session.add(notification)
+    def create_task(self, **kwargs) -> None:
+        """Создает экземпляр Task."""
+        task = Task(**kwargs)
+        self._session.add(task)
         try:
             self._session.commit()
         except IntegrityError as exc:
             logger.exception(exc)
 
 
-def get_notification_service() -> NotificationService:
+def get_task_service() -> TaskService:
     """Возвращает подготовленный TemplateService."""
     with service_with_session(SessionLocal()) as service:
         return service
