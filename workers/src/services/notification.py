@@ -1,11 +1,10 @@
 import logging
 from contextlib import contextmanager
 
-from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm import Session
-
 from db import SessionLocal
 from services.abstract import AbstractService
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import Session
 from workers.email.models import Notification
 
 logger = logging.getLogger(__name__)

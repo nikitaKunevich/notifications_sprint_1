@@ -1,11 +1,10 @@
 from datetime import datetime
 from enum import Enum
 
+from db import Base
 from sqlalchemy import JSON, Column, DateTime
 from sqlalchemy import Enum as saEnum
 from sqlalchemy import ForeignKey, Integer, String, Text
-
-from db import Base
 
 
 class DateMixin:

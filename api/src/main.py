@@ -2,10 +2,9 @@ import logging
 
 import backoff
 import pika
-from fastapi import FastAPI, HTTPException
-
 from config import settings
 from event_model import Event
+from fastapi import FastAPI, HTTPException
 
 app = FastAPI()
 
@@ -16,7 +15,7 @@ CREATED = 201
 INTERNAL_ERROR = 500
 
 
-@app.on_event('startup')
+@app.on_event("startup")
 def init_queue():
     global connection
     global channel
@@ -40,23 +39,20 @@ def init_queue():
     channel.exchange_declare(
         exchange=settings.rabbit_exchange,
         exchange_type=settings.rabbit_exchange_type,
-        durable=True
+        durable=True,
     )
-    channel.queue_declare(
-        queue=settings.rabbit_events_queue_name,
-        durable=True
-    )
+    channel.queue_declare(queue=settings.rabbit_events_queue_name, durable=True)
 
-    logger.info('Connected to queue.')
+    logger.info("Connected to queue.")
 
 
-@app.on_event('shutdown')
+@app.on_event("shutdown")
 def shutdown_event():
-    logger.info('Closing queue connection.')
+    logger.info("Closing queue connection.")
     connection.close()
 
 
-@app.post('/api/v1/event', status_code=CREATED)
+@app.post("/api/v1/event", status_code=CREATED)
 def put_event_to_queue(event: Event):
     try:
         channel.basic_publish(
@@ -65,10 +61,10 @@ def put_event_to_queue(event: Event):
             body=event.json(),
         )
     except Exception as err:
-        logger.error('ERROR - queue publishing error: ' + str(err))
+        logger.error("ERROR - queue publishing error: " + str(err))
         raise HTTPException(
             INTERNAL_ERROR,
-            detail='500: Internal server error. Please try later.',
+            detail="500: Internal server error. Please try later.",
         )
 
-    return {'201': 'Created'}
+    return {"201": "Created"}

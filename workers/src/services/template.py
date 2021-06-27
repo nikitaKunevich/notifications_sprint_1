@@ -1,10 +1,9 @@
 from contextlib import contextmanager
 from typing import Optional
 
-from sqlalchemy.orm import Session
-
 from db import SessionLocal
 from services.abstract import AbstractService
+from sqlalchemy.orm import Session
 from workers.email.models import Template
 
 

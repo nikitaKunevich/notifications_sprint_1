@@ -65,9 +65,7 @@ class Notifications(models.Model):
         (NotificationStatuses.cancelled, "cancelled"),
         (NotificationStatuses.failed, "failed"),
     )
-    CHANNELS = (
-        (Channels.email, "email"),
-    )
+    CHANNELS = ((Channels.email, "email"),)
     status = models.CharField(
         max_length=250,
         choices=NOTIFICATION_STATUSES,

@@ -5,10 +5,9 @@ from datetime import datetime
 from typing import Callable, Optional
 
 import pika
-from pika import channel as pika_channel  # noqa: F401
-
 from config import settings
 from consumers.base import ReconnectingConsumer
+from pika import channel as pika_channel  # noqa: F401
 from services.notification import get_notification_service
 from workers.email.handlers import handlers
 from workers.email.logger import EmailEventAdapter

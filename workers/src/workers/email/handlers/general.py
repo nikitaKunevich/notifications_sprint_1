@@ -1,6 +1,5 @@
 """Модуль содержит основные обработчики для основных событий."""
 import httpx
-
 from config import settings
 from services.template import get_template_service
 

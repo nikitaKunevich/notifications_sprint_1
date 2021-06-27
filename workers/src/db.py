@@ -1,10 +1,9 @@
 """Модуль содержит вспомогательный функции для работы с базой данных."""
 import logging
 
+from config import settings
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
-
-from config import settings
 
 logger = logging.getLogger(__name__)
 
