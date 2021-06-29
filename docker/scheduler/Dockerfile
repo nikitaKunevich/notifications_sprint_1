@@ -6,16 +6,10 @@ ARG ROOT_APP=/app/
 
 RUN mkdir $ROOT_APP
 
+COPY scheduler/* $ROOT_APP
+
 WORKDIR $ROOT_APP
-
-RUN pip install pipenv
-
-COPY scheduler/Pipfile /app/Pipfile
-COPY scheduler/Pipfile.lock /app/Pipfile.lock
-
-RUN pipenv install --system --ignore-pipfile
-
-
-COPY scheduler/src $ROOT_APP
+RUN pip install pipenv && \
+    pipenv install --system --ignore-pipfile
 
 CMD python main.py

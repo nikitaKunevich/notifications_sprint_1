@@ -8,22 +8,16 @@ ARG USER=fastapi
 ARG GROUP=application
 ARG ROOT_APP=/app/
 
-RUN groupadd -g $GID $GROUP
-RUN useradd -u $UID -g $GID -m $USER
+RUN groupadd -g $GID $GROUP && \
+    useradd -u $UID -g $GID -m $USER && \
+    mkdir $ROOT_APP
 
-RUN mkdir $ROOT_APP
+COPY api/* $ROOT_APP
 
 WORKDIR $ROOT_APP
+RUN pip install pipenv && \
+    pipenv install --system --ignore-pipfile && \
+    chown -R $USER:$GROUP $ROOT_APP
 
-COPY api/Pipfile /app/Pipfile
-COPY api/Pipfile.lock /app/Pipfile.lock
-
-RUN pip install pipenv
-RUN pipenv install --system --ignore-pipfile
-
-COPY api/src $ROOT_APP
-
-RUN chown -R $USER:$GROUP $ROOT_APP
 USER $USER
-
 ENTRYPOINT ["uvicorn", "main:app", "--port", "8000", "--host", "0.0.0.0"]
